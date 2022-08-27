@@ -115,6 +115,45 @@ float diffuse_function(FunctionParamters func_params) {
     return 1.0 / PI;
 }
 
+float FSS(FunctionParamters func_params, h, l){
+    h_dot_l = clamp(dot(h ,l), 0.0, 1.0);
+    (1 + ((func_params.roughness * h_dot_l * h_dot_l) - 1) * pow((1 - )));
+}
+
+// subsurface
+float subsurface_scattering(FunctionParamters func_params){
+    float diffuse = (1.25 * func_params.diffuse_color) / PI;
+    
+}
+
+// Clearcoat
+float clearcoat(FunctionParamters func_params){
+    ag = (1 - func_params.clearcoat_gloss) * 1.0 + func_params.clearcoat_gloss * 0.001;
+    lamda_c = (sqrt(1 + )
+}
+
+// Glass
+float glass(FunctionParamters func_params){
+    func_params.diffuse_color * 
+}
+
+float luminance(vec3 color){
+    return (color.r * 0.2126 + color.g * 0.7152 + color.b *0.0722);
+}
+
+// Sheen
+float sheen(FunctionParamters func_params){
+    float sheen_luminance = luminance(func_params.diffuse_color);
+    float color_tint;
+    if (sheen_luminance > 0.0){
+        color_tint = func_params.diffuse_color / sheen_luminance
+    } else{
+        color_tint = 1.0;
+    }
+    color_sheen = (1 - func_params.sheen_tint) + func_params.sheen_tint * color_tint;
+    return (color_sheen * pow((1 - func_params.l_dot_h), 5) * func_params.n_dot_l);
+}
+
 void main() {
     vec4 metal_rough = texture2D(p3d_TextureMetalRoughness, v_texcoord);
     float metallic = clamp(p3d_Material.metallic * metal_rough.b, 0.0, 1.0);
