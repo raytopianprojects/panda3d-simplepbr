@@ -55,6 +55,7 @@ struct FunctionParamters {
     vec3 reflection0;
     vec3 diffuse_color;
     vec3 specular_color;
+    
 };
 
 uniform sampler2D p3d_TextureBaseColor;
@@ -115,15 +116,16 @@ float diffuse_function(FunctionParamters func_params) {
     return 1.0 / PI;
 }
 
-float FSS(FunctionParamters func_params, h, l){
-    h_dot_l = clamp(dot(h ,l), 0.0, 1.0);
-    (1 + ((func_params.roughness * h_dot_l * h_dot_l) - 1) * pow((1 - )));
+float FSS(FunctionParamters func_params, w){
+    (1 + ((func_params.roughness * func_params.l_dot_h *  func_params.l_dot_h) - 1) * pow((1 - w)));
 }
 
 // subsurface
 float subsurface_scattering(FunctionParamters func_params){
     float diffuse = (1.25 * func_params.diffuse_color) / PI;
-    
+    fss = (Fss(func_params,  func_params.n_dot_l) * Fss(func_params,  func_params.n_dot_v) 
+    * ((1 / (func_params.n_dot_v * func_params.n_dot_l)) - 0.5) + 0.5);
+    return diffuse * fss * func_params.n_dot_l;
 }
 
 // Clearcoat
