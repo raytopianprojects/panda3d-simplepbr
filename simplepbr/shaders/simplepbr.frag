@@ -227,8 +227,13 @@ void main() {
         vec3 F = specular_reflection(func_params);
         float V = visibility_occlusion(func_params); // V = G / (4 * n_dot_l * n_dot_v)
         float D = microfacet_distribution(func_params);
-
+        
+        #ifdef SUBSURFACE
+        vec3 diffuse_contrib = (1 - func_params.subsurface) * diffuse_function(func_params) + subsurface * subsurface_scattering(func_params);
+        #else
         vec3 diffuse_contrib = diffuse_color * diffuse_function(func_params);
+        #endif
+        
         vec3 spec_contrib = vec3(F * V * D);
         color.rgb += func_params.n_dot_l * lightcol * (diffuse_contrib + spec_contrib) * shadow;
     }
