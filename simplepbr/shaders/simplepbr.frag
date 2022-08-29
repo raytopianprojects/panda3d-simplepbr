@@ -53,7 +53,7 @@ struct FunctionParamters {
     float roughness;
     float metallic;
     vec3 reflection0;
-    vec3 diffuse_color;
+    vec3 base_color;
     vec3 specular_color;
     
 };
@@ -116,16 +116,43 @@ float diffuse_function(FunctionParamters func_params) {
     return 1.0 / PI;
 }
 
+// Diffuse
+float fd(FunctionParamters func_params, w){
+    return (1 + ((0.5 + 2 * func_params.roughness *  func_params.l_dot_h *  func_params.l_dot_h) - 1) * (1 - pow(w, 5.0)));
+}
+
+float diffuse(FunctionParamters func_params){
+    color_pi = func_params.base_color / PI;
+    FD = fd(func_params,  func_params.n_dot_l) * fd(func_params,  func_params.n_dot_v);
+    return color_pi * FD * func_params.n_dot_l;
+}
+
 float FSS(FunctionParamters func_params, w){
-    (1 + ((func_params.roughness * func_params.l_dot_h *  func_params.l_dot_h) - 1) * pow((1 - w)));
+    return (1 + ((func_params.roughness * func_params.l_dot_h *  func_params.l_dot_h) - 1) * (1 - pow(w, 5.0)));
 }
 
 // subsurface
 float subsurface_scattering(FunctionParamters func_params){
-    float diffuse = (1.25 * func_params.diffuse_color) / PI;
+    float diffuse_sub = (1.25 * func_params.base_color) / PI;
     fss = (Fss(func_params,  func_params.n_dot_l) * Fss(func_params,  func_params.n_dot_v) 
     * ((1 / (func_params.n_dot_v * func_params.n_dot_l)) - 0.5) + 0.5);
-    return diffuse * fss * func_params.n_dot_l;
+    return diffuse_sub * fss * func_params.n_dot_l;
+}
+
+// Metal
+float FM(FunctionParamters func_params, w){
+    return func_params.base_color + (vec3(1.0) - func_params.base_color) * (1 - pow(w, 5.0))
+}
+
+float DM(FunctionParamters func_params){
+    the_math = PI * 
+    return 1 / the_math;
+}
+
+GM
+
+float metal(FunctionParamters func_params){
+    
 }
 
 // Clearcoat
@@ -145,15 +172,15 @@ float luminance(vec3 color){
 
 // Sheen
 float sheen(FunctionParamters func_params){
-    float sheen_luminance = luminance(func_params.diffuse_color);
+    float sheen_luminance = luminance(func_params.base_color);
     float color_tint;
     if (sheen_luminance > 0.0){
-        color_tint = func_params.diffuse_color / sheen_luminance
+        color_tint = func_params.base_color / sheen_luminance;
     } else{
         color_tint = 1.0;
     }
     color_sheen = (1 - func_params.sheen_tint) + func_params.sheen_tint * color_tint;
-    return (color_sheen * pow((1 - func_params.l_dot_h), 5) * func_params.n_dot_l);
+    return (color_sheen * pow((1 - func_params.l_dot_h), 5.0) * func_params.n_dot_l);
 }
 
 void main() {
