@@ -167,11 +167,13 @@ float G(vec3 w){
 }
 
 float GM(FunctionParamters func_params){
-    return G(func_params.)*G(func_params.);
+    return G(func_params.in)*G(func_params.out);
 }
 
 float metal(FunctionParamters func_params){
-    
+    top_math = FM * DM * GM;
+    bottom_math = 4 * func_params.;
+    return top_math / bottom_math;
 }
 
 // Clearcoat
