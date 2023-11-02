@@ -55,6 +55,8 @@ struct FunctionParamters {
     vec3 reflection0;
     vec3 base_color;
     vec3 specular_color;
+float ax;
+float ay;
     
 };
 
@@ -145,7 +147,10 @@ float FM(FunctionParamters func_params, w){
 }
 
 float DM(FunctionParamters func_params){
-    the_math = PI * 
+    float the_math_1 =  (((func_params.h.x * func_params.h.x) / (func_params.ax * func_params.ax)) +
+     ((func_params.h.y * func_params.h.y) / (func_params.ay * func_params.ay)) +
+func_params.h.z * func_params.h.z);
+    float the_math = PI * func_params.ax * func_params.ay * (the_math_1 * the_math_1);
     return 1 / the_math;
 }
 
@@ -250,6 +255,12 @@ void main() {
         func_params.reflection0 = spec_color;
         func_params.diffuse_color = diffuse_color;
         func_params.specular_color = spec_color;
+
+        // Calcuat Anistropic
+        float aspect = sqrt(1 - 0.9 * anisotropic);
+        func_params.ax = max(0.0001, alpha_roughness / aspect);
+        func_params.ay = max(0.0001, alpha_roughness * aspect);
+
 
         vec3 F = specular_reflection(func_params);
         float V = visibility_occlusion(func_params); // V = G / (4 * n_dot_l * n_dot_v)
