@@ -154,7 +154,21 @@ func_params.h.z * func_params.h.z);
     return 1 / the_math;
 }
 
-GM
+float V(vec3 w){
+    top_in = ((w.x * ax) * (w.x * ax)) * ((w.y * ay) * (w.y * ay));
+    top_bottom = w.z * w.z;
+    top = sqrt(1 + (top_in / top_bottom)) - 1;
+    return top / 2;
+}
+
+float G(vec3 w){
+    float math = 1 / (1 + V(w));
+    return math;
+}
+
+float GM(FunctionParamters func_params){
+    return G(func_params.)*G(func_params.);
+}
 
 float metal(FunctionParamters func_params){
     
