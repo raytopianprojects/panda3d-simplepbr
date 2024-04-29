@@ -50,6 +50,8 @@ varying mat3 v_world_tbn;
 varying vec4 v_shadow_pos[MAX_LIGHTS];
 #endif
 
+@uniforms
+
 void main() {
 #ifdef ENABLE_SKINNING
     mat4 skin_matrix = (
@@ -96,6 +98,8 @@ void main() {
             world_bitangent,
             world_normal
     );
+
+    @vertex
 
     gl_Position = p3d_ProjectionMatrix * view_position;
 }
