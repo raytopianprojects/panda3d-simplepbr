@@ -87,9 +87,9 @@ def _load_shader_str(shaderpath: str, defines: ShaderDefinesType | None = None) 
     return shaderstr
 
 
-def make_shader(name: str, vertex: str, fragment: str, defines: ShaderDefinesType) -> p3d.Shader:
-    vertstr = _load_shader_str(vertex, defines)
-    fragstr = _load_shader_str(fragment, defines)
+def make_shader(name: str, vertex: str, fragment: str, defines: ShaderDefinesType, user_vertex: str = "", vertex_uniforms: str = "", user_frag: str = "", frag_uniforms: str = "", post_light: str = "", pre_light: str = "") -> p3d.Shader:
+    vertstr = _load_shader_str(vertex, defines).replace("@vertex", user_vertex).replace("@uniforms", vertex_uniforms)
+    fragstr = _load_shader_str(fragment, defines).replace("@frag", user_frag).replace("@uniforms", frag_uniforms).replace("@post_light", post_light).replace("@pre_light", pre_light)
     shader = p3d.Shader.make(
         p3d.Shader.SL_GLSL,
         vertstr,
