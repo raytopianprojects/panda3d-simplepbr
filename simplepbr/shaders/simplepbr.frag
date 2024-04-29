@@ -180,6 +180,8 @@ vec3 irradiance_from_sh(vec3 normal) {
         + sh_coeffs[8] * 0.546274 * (normal.x * normal.x - normal.y * normal.y);
 }
 
+@uniforms
+
 void main() {
     vec4 metal_rough = texture2D(p3d_TextureMetalRoughness, v_texcoord);
     float metallic = clamp(p3d_Material.metallic * metal_rough.b, 0.0, 1.0);
@@ -254,7 +256,9 @@ void main() {
 
         vec3 diffuse_contrib = diffuse_color * diffuse_function();
         vec3 spec_contrib = vec3(F * V * D);
+        @pre_light
         color.rgb += func_params.n_dot_l * lightcol * (diffuse_contrib + spec_contrib) * shadow;
+        @post_light
     }
 
     // Indirect diffuse + specular (IBL)
@@ -281,7 +285,7 @@ void main() {
     float fog_factor = clamp(1.0 / exp(fog_distance * p3d_Fog.density), 0.0, 1.0);
     color = mix(p3d_Fog.color, color, fog_factor);
 #endif
-
+    @frag
 #ifdef USE_330
     o_color = color;
 #else
