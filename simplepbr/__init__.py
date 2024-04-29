@@ -175,6 +175,12 @@ class Pipeline:
     sdr_lut_factor: float = 1.0
     env_map: EnvMap | str | None = None
     calculate_normalmap_blue: bool = True
+    user_vertex: str = ""
+    vertex_uniforms: str = ""
+    user_frag: str = ""
+    frag_uniforms: str = ""
+    post_light: str = ""
+    pre_light: str = ""
 
     # Private instance variables
     _shader_ready: bool = False
@@ -285,7 +291,13 @@ class Pipeline:
             'pbr',
             'simplepbr.vert',
             'simplepbr.frag',
-            pbr_defines
+            pbr_defines,
+            user_vertex: str = self.user_vertex,
+            vertex_uniforms: str = self.vertex_uniforms,
+            user_frag: str = self.user_frag,
+            frag_uniforms: str = self.frag_uniforms,
+            post_light: str = self.post_light,
+            pre_light: str = self.pre_light
         )
         attr = p3d.ShaderAttrib.make(pbrshader)
         if self.enable_hardware_skinning:
